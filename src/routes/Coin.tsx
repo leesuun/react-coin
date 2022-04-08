@@ -1,16 +1,18 @@
-import { useEffect, useState } from "react";
 import {
     useParams,
     useLocation,
     Routes,
     Route,
     useMatch,
+    Link,
 } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { useQuery } from "react-query";
 import styled from "styled-components";
 
 import Chart from "./Chart";
 import Price from "./Price";
+import { fetchCoinInfo, fetchCoinTicker } from "../api";
+import { Helmet } from "react-helmet";
 
 const Container = styled.div`
     padding: 0px 20px;
@@ -81,6 +83,10 @@ interface RouterState {
     name: string;
 }
 
+// interface RouteParams {
+//     coinId: string | Record<string, string | undefined>;
+// }
+
 interface ITag {
     id: string;
     name: string;
@@ -147,13 +153,27 @@ interface PriceData {
 function Coin() {
     const { coinId } = useParams<Record<string, string | undefined>>();
     const { name } = (useLocation()?.state as RouterState) || "Loading...";
+    const chartMatch = useMatch(`/:coinId/chart`);
+    const priceMatch = useMatch(`/:coinId/price`);
+
+    const { isLoading: infoLoading, data: infoData } = useQuery<InfoData>(
+        ["info", coinId],
+        () => fetchCoinInfo(coinId)
+    );
+
+    const { isLoading: tickersLoading, data: tickersData } =
+        useQuery<PriceData>(
+            ["tickers", coinId],
+            () => fetchCoinTicker(coinId),
+            { refetchInterval: 5000 }
+        );
+
+    const loading = infoLoading || tickersLoading;
+
+    /*
     const [info, setInfo] = useState<InfoData>();
     const [priceInfo, setPriceInfo] = useState<PriceData>();
     const [loading, setLoading] = useState(true);
-    const chartMatch = useMatch(`/:coinId/chart`);
-    const priceMatch = useMatch(`/:coinId/price`);
-    console.log(useLocation());
-
     useEffect(() => {
         (async () => {
             const infoData = await (
@@ -168,12 +188,19 @@ function Coin() {
             setLoading(false);
         })();
     }, [coinId]);
+    */
 
     return (
         <Container>
+            <Helmet>
+                <title>
+                    {name ? name : loading ? "Loading..." : infoData?.name}
+                </title>
+            </Helmet>
+
             <Header>
                 <Title>
-                    {name ? name : loading ? "Loading..." : info?.name}
+                    {name ? name : loading ? "Loading..." : infoData?.name}
                 </Title>
             </Header>
 
@@ -184,26 +211,28 @@ function Coin() {
                     <Overview>
                         <OverviewItem>
                             <span>Rank:</span>
-                            <span>{info?.rank}</span>
+                            <span>{infoData?.rank}</span>
                         </OverviewItem>
                         <OverviewItem>
                             <span>Symbol:</span>
-                            <span>${info?.symbol}</span>
+                            <span>${infoData?.symbol}</span>
                         </OverviewItem>
                         <OverviewItem>
-                            <span>Open Source:</span>
-                            <span>{info?.open_source ? "Yes" : "No"}</span>
+                            <span>Price:</span>
+                            <span>
+                                {tickersData?.quotes.USD.price.toFixed(3)}
+                            </span>
                         </OverviewItem>
                     </Overview>
-                    <Description>{info?.description}</Description>
+                    <Description>{infoData?.description}</Description>
                     <Overview>
                         <OverviewItem>
                             <span>Total Suply:</span>
-                            <span>{priceInfo?.total_supply}</span>
+                            <span>{tickersData?.total_supply}</span>
                         </OverviewItem>
                         <OverviewItem>
                             <span>Max Supply:</span>
-                            <span>{priceInfo?.max_supply}</span>
+                            <span>{tickersData?.max_supply}</span>
                         </OverviewItem>
                     </Overview>
 
@@ -215,19 +244,11 @@ function Coin() {
                             <Link to={`/${coinId}/price`}>Price</Link>
                         </Tab>
                     </Tabs>
-
-                    {/* <Routes>
-                        <Route
-                            path={`/${coinId}/price`}
-                            element={<Price />}
-                        ></Route>
-                        <Route
-                            path={`/${coinId}/chart`}
-                            element={<Chart />}
-                        ></Route>
-                    </Routes> */}
                     <Routes>
-                        <Route path="chart" element={<Chart />} />
+                        <Route
+                            path="chart"
+                            element={<Chart coinId={coinId} />}
+                        />
                         <Route path="price" element={<Price />} />
                     </Routes>
                 </>

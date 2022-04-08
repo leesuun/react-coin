@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import coinIcons from "base64-cryptocurrency-icons";
 import { useQuery } from "react-query";
+import { Helmet } from "react-helmet";
 
 import { fetchCoins } from "../api";
 
@@ -87,6 +87,10 @@ function Coins() {
 
     return (
         <Container>
+            <Helmet>
+                <title>코인</title>
+            </Helmet>
+
             <Header>
                 <Title>비트코인</Title>
             </Header>
