@@ -21,8 +21,18 @@ function Chart({ coinId }: ChartProps) {
     const { isLoading, data } = useQuery<IHistorical[]>(
         ["ohlcv", coinId],
         () => fetchCoinHistory(coinId),
-        { refetchInterval: 5000 }
+        { refetchInterval: 6000 * 30 }
     );
+
+    // data?.map((price) => {
+    //     new Date(price.time_close),
+    //         [
+    //             price.open,
+    //             price.high,
+    //             price.close,
+    //             price.close,
+    //         ];
+    // }),
 
     return (
         <div>
@@ -30,53 +40,108 @@ function Chart({ coinId }: ChartProps) {
                 "Loading Chart..."
             ) : (
                 <ReactApexChart
-                    type="line"
+                    type="candlestick"
+                    // series={[
+                    //     {
+                    //         name: "Price",
+                    //         data: data?.map((price) => price.close) as number[],
+                    //     },
+                    // ]}
+
                     series={[
                         {
                             name: "Price",
-                            data: data?.map((price) => price.close) as number[],
+                            data: data?.map((price) => {
+                                return {
+                                    x: Date.parse(price.time_close),
+                                    y: [
+                                        price.open,
+                                        price.high,
+                                        price.low,
+                                        price.close,
+                                    ],
+                                };
+                            }) as { x: number; y: number[] }[],
                         },
                     ]}
                     options={{
-                        theme: {
-                            mode: "dark",
-                        },
                         chart: {
-                            height: 300,
-                            width: 500,
-                            toolbar: {
-                                show: false,
-                            },
-                            background: "transparent",
+                            type: "candlestick",
+                            height: 350,
                         },
-                        grid: { show: false },
-                        stroke: {
-                            curve: "smooth",
-                            width: 4,
-                        },
-                        yaxis: {
-                            show: false,
+                        title: {
+                            text: "CandleStick Chart",
+                            align: "left",
                         },
                         xaxis: {
-                            axisBorder: { show: false },
-                            axisTicks: { show: false },
+                            title: {
+                                style: {
+                                    color: "yellow",
+                                },
+                            },
                             labels: {
-                                show: false,
+                                style: {
+                                    colors: ["green"],
+                                },
                             },
                             type: "datetime",
-                            categories: data?.map((price) => price.time_close),
                         },
-                        fill: {
-                            type: "gradient",
-                            gradient: { gradientToColors: ["blue"] },
-                        },
-                        colors: ["red"],
-                        tooltip: {
-                            y: {
-                                formatter: (value) => `${value.toFixed(3)}`,
+                        yaxis: {
+                            labels: {
+                                formatter: (value) => value.toFixed(1),
+                                style: {
+                                    colors: ["green"],
+                                },
+                            },
+                            tooltip: {
+                                enabled: true,
                             },
                         },
+                        tooltip: {
+                            theme: "dark",
+                        },
                     }}
+
+                    // options={{
+                    //     theme: {
+                    //         mode: "dark",
+                    //     },
+                    //     chart: {
+                    //         height: 300,
+                    //         width: 500,
+                    //         toolbar: {
+                    //             show: false,
+                    //         },
+                    //         background: "transparent",
+                    //     },
+                    //     grid: { show: false },
+                    //     stroke: {
+                    //         curve: "smooth",
+                    //         width: 4,
+                    //     },
+                    //     yaxis: {
+                    //         show: false,
+                    //     },
+                    //     xaxis: {
+                    //         axisBorder: { show: false },
+                    //         axisTicks: { show: false },
+                    //         labels: {
+                    //             show: false,
+                    //         },
+                    //         type: "datetime",
+                    //         categories: data?.map((price) => price.time_close),
+                    //     },
+                    //     fill: {
+                    //         type: "gradient",
+                    //         gradient: { gradientToColors: ["blue"] },
+                    //     },
+                    //     colors: ["red"],
+                    //     tooltip: {
+                    //         y: {
+                    //             formatter: (value) => `${value.toFixed(3)}`,
+                    //         },
+                    //     },
+                    // }}
                 />
             )}
         </div>

@@ -8,4 +8,15 @@ declare module "styled-components" {
         textColor: string;
         accentColor: string;
     }
+
+    export interface DarkTheme {
+        bgColor: string;
+        textColor: string;
+        accentColor: string;
+    }
+    export interface LightTheme {
+        bgColor: string;
+        textColor: string;
+        accentColor: string;
+    }
 }

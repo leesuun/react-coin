@@ -10,6 +10,7 @@ const Container = styled.div`
     padding: 0px 20px;
     max-width: 480px;
     margin: 0px auto;
+    margin-top: 1rem;
 `;
 const Header = styled.header`
     height: 15vh;
@@ -24,6 +25,7 @@ const Title = styled.h1`
 const CoinList = styled.ul``;
 const Coin = styled.li`
     background-color: white;
+
     color: ${(props) => props.theme.bgColor};
     border-radius: 15px;
     margin-bottom: 9px;
@@ -63,27 +65,6 @@ interface ICoins {
 
 function Coins() {
     const { isLoading, data } = useQuery<ICoins[]>("allCoins", fetchCoins);
-
-    /*
-    const [coins, setCoins] = useState<CoinInterface[]>([]);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        (async () => {
-            const coins = await (
-                await fetch("https://api.coinpaprika.com/v1/coins")
-            ).json();
-
-            setCoins(
-                coins.filter(
-                    (coin: CoinInterface) =>
-                        coin.is_active && 0 < coin.rank && coin.rank < 100
-                )
-            );
-            setLoading(false);
-        })();
-    }, []);
-    */
 
     return (
         <Container>

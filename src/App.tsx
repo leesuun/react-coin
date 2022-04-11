@@ -2,6 +2,9 @@ import Router from "./Router";
 import { createGlobalStyle } from "styled-components";
 import { Helmet } from "react-helmet";
 import { ReactQueryDevtools } from "react-query/devtools";
+import { ThemeProvider } from "styled-components";
+import { LightMode, DarkMode } from "./theme";
+import { useState } from "react";
 
 const GlobalStyle = createGlobalStyle`
     html, body, div, span, applet, object, iframe,
@@ -70,19 +73,26 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 function App() {
-    return (
-        <>
-            <Helmet>
-                <link
-                    href="https://fonts.googleapis.com/css2?family=Readex+Pro&family=Rubik+Moonrocks&family=Source+Sans+Pro:wght@300;400&display=swap"
-                    rel="stylesheet"
-                />
-            </Helmet>
-            <GlobalStyle />
+    const [mode, setMode] = useState<boolean>(false);
 
-            <Router />
-            <ReactQueryDevtools initialIsOpen={true} />
-        </>
+    const onClick = () => setMode(mode ? false : true);
+
+    return (
+        <ThemeProvider theme={mode ? DarkMode : LightMode}>
+            <>
+                <Helmet>
+                    <link
+                        href="https://fonts.googleapis.com/css2?family=Readex+Pro&family=Rubik+Moonrocks&family=Source+Sans+Pro:wght@300;400&display=swap"
+                        rel="stylesheet"
+                    />
+                </Helmet>
+                <GlobalStyle />
+                <button onClick={onClick}>Theme Change</button>
+
+                <Router />
+                <ReactQueryDevtools initialIsOpen={true} />
+            </>
+        </ThemeProvider>
     );
 }
 

@@ -7,7 +7,7 @@ import {
     Link,
 } from "react-router-dom";
 import { useQuery } from "react-query";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 
 import Chart from "./Chart";
 import Price from "./Price";
@@ -18,16 +18,44 @@ const Container = styled.div`
     padding: 0px 20px;
     max-width: 480px;
     margin: 0px auto;
+    margin-top: 1rem;
 `;
 const Header = styled.header`
     height: 15vh;
     display: flex;
+    position: relative;
     justify-content: center;
     align-items: center;
 `;
 const Title = styled.h1`
     font-size: 48px;
     color: ${(props) => props.theme.accentColor};
+`;
+
+const BtnOpacity = keyframes`
+    from{
+        opacity: 0.5
+    }
+    to{
+        opacity: 1
+    }
+
+`;
+
+const BackBtn = styled.button`
+    position: absolute;
+    left: 3px;
+    top: 10px;
+    border: none;
+    border-radius: 10px;
+    background-color: tomato;
+    opacity: 0.5;
+
+    &:hover {
+        cursor: pointer;
+        opacity: 1;
+        animation: ${BtnOpacity} 0.5s ease-in;
+    }
 `;
 
 const Loading = styled.span`
@@ -199,6 +227,10 @@ function Coin() {
             </Helmet>
 
             <Header>
+                <Link to={`/`}>
+                    <BackBtn>⬅ Back</BackBtn>
+                </Link>
+
                 <Title>
                     {name ? name : loading ? "Loading..." : infoData?.name}
                 </Title>
