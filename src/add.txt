@@ -1,4 +1,0 @@
-1. 뒤로가기
-2. price tap
-3. 다크모드
-4. chart 스타일 바꾸기 candlestick

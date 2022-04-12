@@ -4,7 +4,8 @@ import { Helmet } from "react-helmet";
 import { ReactQueryDevtools } from "react-query/devtools";
 import { ThemeProvider } from "styled-components";
 import { LightMode, DarkMode } from "./theme";
-import { useState } from "react";
+import { useRecoilValue } from "recoil";
+import { isDarkAtom } from "./atoms";
 
 const GlobalStyle = createGlobalStyle`
     html, body, div, span, applet, object, iframe,
@@ -73,13 +74,11 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 function App() {
-    const [mode, setMode] = useState<boolean>(false);
-
-    const onClick = () => setMode(mode ? false : true);
+    const isDark = useRecoilValue(isDarkAtom);
 
     return (
-        <ThemeProvider theme={mode ? DarkMode : LightMode}>
-            <>
+        <>
+            <ThemeProvider theme={isDark ? DarkMode : LightMode}>
                 <Helmet>
                     <link
                         href="https://fonts.googleapis.com/css2?family=Readex+Pro&family=Rubik+Moonrocks&family=Source+Sans+Pro:wght@300;400&display=swap"
@@ -87,12 +86,11 @@ function App() {
                     />
                 </Helmet>
                 <GlobalStyle />
-                <button onClick={onClick}>Theme Change</button>
 
                 <Router />
                 <ReactQueryDevtools initialIsOpen={true} />
-            </>
-        </ThemeProvider>
+            </ThemeProvider>
+        </>
     );
 }
 

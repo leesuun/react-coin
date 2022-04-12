@@ -1,6 +1,8 @@
 import ReactApexChart from "react-apexcharts";
 import { useQuery } from "react-query";
+import { useRecoilValue } from "recoil";
 import { fetchCoinHistory } from "../api";
+import { isDarkAtom } from "../atoms";
 
 interface ChartProps {
     coinId: string | undefined;
@@ -23,16 +25,7 @@ function Chart({ coinId }: ChartProps) {
         () => fetchCoinHistory(coinId),
         { refetchInterval: 6000 * 30 }
     );
-
-    // data?.map((price) => {
-    //     new Date(price.time_close),
-    //         [
-    //             price.open,
-    //             price.high,
-    //             price.close,
-    //             price.close,
-    //         ];
-    // }),
+    const isDark = useRecoilValue(isDarkAtom);
 
     return (
         <div>
@@ -41,13 +34,6 @@ function Chart({ coinId }: ChartProps) {
             ) : (
                 <ReactApexChart
                     type="candlestick"
-                    // series={[
-                    //     {
-                    //         name: "Price",
-                    //         data: data?.map((price) => price.close) as number[],
-                    //     },
-                    // ]}
-
                     series={[
                         {
                             name: "Price",
@@ -98,50 +84,9 @@ function Chart({ coinId }: ChartProps) {
                             },
                         },
                         tooltip: {
-                            theme: "dark",
+                            theme: isDark ? "dark" : "light",
                         },
                     }}
-
-                    // options={{
-                    //     theme: {
-                    //         mode: "dark",
-                    //     },
-                    //     chart: {
-                    //         height: 300,
-                    //         width: 500,
-                    //         toolbar: {
-                    //             show: false,
-                    //         },
-                    //         background: "transparent",
-                    //     },
-                    //     grid: { show: false },
-                    //     stroke: {
-                    //         curve: "smooth",
-                    //         width: 4,
-                    //     },
-                    //     yaxis: {
-                    //         show: false,
-                    //     },
-                    //     xaxis: {
-                    //         axisBorder: { show: false },
-                    //         axisTicks: { show: false },
-                    //         labels: {
-                    //             show: false,
-                    //         },
-                    //         type: "datetime",
-                    //         categories: data?.map((price) => price.time_close),
-                    //     },
-                    //     fill: {
-                    //         type: "gradient",
-                    //         gradient: { gradientToColors: ["blue"] },
-                    //     },
-                    //     colors: ["red"],
-                    //     tooltip: {
-                    //         y: {
-                    //             formatter: (value) => `${value.toFixed(3)}`,
-                    //         },
-                    //     },
-                    // }}
                 />
             )}
         </div>
