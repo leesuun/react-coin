@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import coinIcons from "base64-cryptocurrency-icons";
 import { useQuery } from "react-query";
 import { Helmet } from "react-helmet";
+import { useRecoilValue } from "recoil";
 
 import { fetchCoins } from "../api";
 import { useSetRecoilState } from "recoil";
@@ -17,8 +18,22 @@ const Container = styled.div`
 const Header = styled.header`
     height: 15vh;
     display: flex;
+    position: relative;
+
     justify-content: center;
     align-items: center;
+`;
+
+const ToggleBtn = styled.button`
+    position: absolute;
+    right: 3px;
+    top: 3px;
+    border: none;
+    background: ${(props) => props.theme.tgBtn};
+
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
 `;
 const Title = styled.h1`
     font-size: 48px;
@@ -69,6 +84,7 @@ function Coins() {
     const { isLoading, data } = useQuery<ICoins[]>("allCoins", fetchCoins);
     const setIsDark = useSetRecoilState(isDarkAtom);
     const toggleDarkAtom = () => setIsDark((prev) => !prev);
+    const isDark = useRecoilValue(isDarkAtom);
 
     return (
         <Container>
@@ -78,7 +94,9 @@ function Coins() {
 
             <Header>
                 <Title>비트코인</Title>
-                <button onClick={toggleDarkAtom}>Toggle Mode</button>
+                <ToggleBtn onClick={toggleDarkAtom}>
+                    {isDark ? "🌞" : "🌜"}
+                </ToggleBtn>
             </Header>
 
             {isLoading ? (
