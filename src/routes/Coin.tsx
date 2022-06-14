@@ -169,7 +169,6 @@ interface PriceData {
             percent_change_15m: number;
             percent_change_24h: number;
             percent_change_30d: number;
-            percent_change_30m: number;
             percent_from_price_ath: number;
             price: number;
             volume_24h: number;

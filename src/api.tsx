@@ -17,7 +17,7 @@ export async function fetchCoinTicker(coinId: string | undefined) {
 }
 export async function fetchCoinHistory(coinId: string | undefined) {
     const endDate = Math.floor(Date.now() / 1000);
-    const startDate = endDate - 60 * 60 * 24 * 6.9;
+    const startDate = endDate - 60 * 60 * 23;
 
     // console.log(coinId);
     // console.log(endDate, startDate);
